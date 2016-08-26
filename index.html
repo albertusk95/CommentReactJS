@@ -6,6 +6,12 @@
 		<script src="https://npmcdn.com/react@15.3.1/dist/react.js"></script>
 		<script src="https://npmcdn.com/react-dom@15.3.1/dist/react-dom.js"></script>
 		<script src="https://npmcdn.com/babel-core@5.8.38/browser.min.js"></script>
+	
+		<style>
+			.btnEdit {
+				margin-right: 50px;
+			}
+		</style>
 	</head>
 	<body>
 		
@@ -17,24 +23,6 @@
 		
 		<!-- Javascript -->
 		<script type="text/babel">
-				
-			var EH = React.createClass({
-				edit: function() {
-					alert("Hi from edit");
-				},
-				remove: function() {
-					alert("Hi from remove");
-				},
-				render: function() {
-					return (
-						<div>
-							<h2>{this.props.children}</h2>
-							<button onClick={this.edit}>Edit</button>
-							<button onClick={this.remove}>Remove</button>
-						</div>
-					);
-				}
-			});
 			
 			var ST = React.createClass({
 				
@@ -68,17 +56,93 @@
 				}
 			});
 			
-			ReactDOM.render(
-				<div>
-					<EH>
-						Albertus Kelvin<br />
-						Insitute of Technology Bandung<br />
-						Computer Science YES
-					</EH>
-				</div>
-				, document.getElementById("myEH"));
-		
+			var Comment = React.createClass({
 			
+				getInitialState: function() {
+					return ({
+						editing: false
+					});
+				},
+				edit: function() {
+					this.setState({editing: true});
+				},
+				remove: function() {
+					this.props.deleteFromBoard(this.props.index);
+				},
+				save: function() {
+					var val = this.refs.newText.value;
+					console.log("New text: " + val);
+					this.props.updateCommentText(val, this.props.index);
+					this.setState({editing: false});
+				},
+				
+				renderNormal: function() {
+					return (
+						<div>
+							<h3>{this.props.children}</h3>
+							<button onClick={this.edit} className="btnEdit">Edit</button>
+							<button onClick={this.remove}>Remove</button>
+						</div>
+					);
+				},
+				
+				renderEdit: function() {
+					return (
+						<div>
+							<textarea ref="newText" defaultValue={this.props.children}></textarea><br />
+							<button onClick={this.save}>Save</button>
+						</div>
+					);
+				},
+				
+				render: function() {
+					if (this.state.editing) {
+						return this.renderEdit();
+					} else {
+						return this.renderNormal();
+					}
+				}
+			});
+			
+			var Board = React.createClass({
+				getInitialState: function() {
+					return ({
+						comments: [
+							'My name is Kelvin',
+							'Institute of Technology Bandung',
+							'Computer science'
+						]
+					});
+				},
+				removeComment: function(i) {
+					console.log("Removing comment: " + i);
+					var arr = this.state.comments;
+					arr.splice(i, 1);
+					this.setState({comments: arr});
+				},
+				updateComment: function(newText, i) {
+					var arr = this.state.comments;
+					arr[i] = newText;
+					this.setState({comments: arr});
+				},
+				eachComment: function(text, i) {
+					return (
+						<Comment key={i} index={i} updateCommentText={this.updateComment} deleteFromBoard={this.removeComment}>
+							{text}
+						</Comment>
+					);
+				},
+				render: function() {
+					return (
+						<div>
+							{this.state.comments.map(this.eachComment)}
+						</div>
+					);
+				}
+			});
+			
+			ReactDOM.render(<Board />, document.getElementById("myEH"));
+		
 			ReactDOM.render(
 				<div>
 					<ST />
