@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>HelloApp &dot; ReactJS</title>
+		<script src="https://npmcdn.com/react@15.3.1/dist/react.js"></script>
+		<script src="https://npmcdn.com/react-dom@15.3.1/dist/react-dom.js"></script>
+		<script src="https://npmcdn.com/babel-core@5.8.38/browser.min.js"></script>
+	</head>
+	<body>
+		
+		<!-- Event handling -->
+		<div id="myEH" style="margin-bottom: 50px;"></div>
+		
+		<!-- State -->
+		<div id="myState"></div>
+		
+		<!-- Javascript -->
+		<script type="text/babel">
+				
+			var EH = React.createClass({
+				edit: function() {
+					alert("Hi from edit");
+				},
+				remove: function() {
+					alert("Hi from remove");
+				},
+				render: function() {
+					return (
+						<div>
+							<h2>{this.props.children}</h2>
+							<button onClick={this.edit}>Edit</button>
+							<button onClick={this.remove}>Remove</button>
+						</div>
+					);
+				}
+			});
+			
+			var ST = React.createClass({
+				
+				getInitialState: function() {
+					return ({
+						checked: false
+					});
+				},
+				
+				handleChecked: function() {
+					this.setState({
+						checked: !this.state.checked
+					});
+				},
+				
+				render: function() {
+					var msg;
+					
+					if (this.state.checked) {
+						msg = "checked";
+					} else {
+						msg = "unchecked";
+					}
+					
+					return (
+						<div>
+							<input type="checkbox" onChange={this.handleChecked} />
+							<h3>Checkbox is {msg}</h3>
+						</div>
+					);
+				}
+			});
+			
+			ReactDOM.render(
+				<div>
+					<EH>
+						Albertus Kelvin<br />
+						Insitute of Technology Bandung<br />
+						Computer Science YES
+					</EH>
+				</div>
+				, document.getElementById("myEH"));
+		
+			
+			ReactDOM.render(
+				<div>
+					<ST />
+				</div>
+				, document.getElementById("myState"));
+		
+		</script>
+		
+	</body>
+</html>
